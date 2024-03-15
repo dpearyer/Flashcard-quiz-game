@@ -2,5 +2,5 @@ class Flashcard {
   final String term;
   final String definition;
 
-  Flashcard({this.term, this.definition});
+  Flashcard({required this.term, required this.definition});
 }

@@ -6,7 +6,8 @@ class FlashcardView extends StatelessWidget{
   final String text;
 
 
-  FlashcardView({Key key, this.text}) : super(key: key);
+  // ignore: prefer_const_constructors_in_immutables
+  FlashcardView({Key? key, required this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

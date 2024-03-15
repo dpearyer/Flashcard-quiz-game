@@ -37,8 +37,14 @@ class _FlashCardAppState extends State<FlashCardApp> {
   Flashcard( 
     term: "osmosis",
     definition: "explanation"
+  ),
+  Flashcard( 
+    term: "osmosis 2",
+    definition: "explanation 2"
   )
- ]
+ ];
+   int _currentIndex = 0;
+
    @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -80,9 +86,17 @@ class _FlashCardAppState extends State<FlashCardApp> {
       ),
     );
   }
-  void showNextCard() {
-    
+   void showNextCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex + 1 < _flashcards.length) ? _currentIndex + 1 : 0;
+    });
   }
 
-  void showPreviousCard() {}
+  void showPreviousCard() {
+    setState(() {
+      _currentIndex =
+          (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
+    });
+  }
 }
