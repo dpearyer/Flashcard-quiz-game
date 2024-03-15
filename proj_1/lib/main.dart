@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'flashcard_view.dart';
+import 'flashcard.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -31,7 +33,12 @@ class FlashCardApp extends StatefulWidget {
 }
 
 class _FlashCardAppState extends State<FlashCardApp> {
- 
+ List<Flashcard> _flashcards =[
+  Flashcard( 
+    term: "osmosis",
+    definition: "explanation"
+  )
+ ]
    @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,10 +51,14 @@ class _FlashCardAppState extends State<FlashCardApp> {
                   width: 350,
                   height: 250,
                   child: FlipCard(
-                      front: FlashcardView(
+                      
+                      front:
+                        FlashcardView(
                         text: _flashcards[_currentIndex].term,
-                      ),
-                      back: FlashcardView(
+                        
+                    ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                      back: 
+                        FlashcardView(
                         text: _flashcards[_currentIndex].definition,
                       ))),
               Row(
@@ -69,3 +80,9 @@ class _FlashCardAppState extends State<FlashCardApp> {
       ),
     );
   }
+  void showNextCard() {
+    
+  }
+
+  void showPreviousCard() {}
+}
