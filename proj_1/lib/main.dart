@@ -41,8 +41,17 @@ class _HomePageState extends State<HomePage>{
 
   Widget build(BuildContext context){
   return MaterialApp(
-  home: Scaffold(
+  home: DefaultTabController(
+    length: 2,
+    child: Scaffold(
     appBar: AppBar(
+        bottom: const TabBar(
+          tabs: [
+            Tab(icon: Icon(Icons.card_giftcard, color: Colors.white,)),
+            Tab(icon: Icon(Icons.lightbulb, color: Colors.white,)),
+           
+          ],
+        ),
         title: const Text('Cognicode', textAlign: TextAlign.center,),
         backgroundColor: Colors.purple,
         elevation: 4,
@@ -98,6 +107,7 @@ class _HomePageState extends State<HomePage>{
           ],
         ),
       ),
+  ),
   ),
     );
   }
