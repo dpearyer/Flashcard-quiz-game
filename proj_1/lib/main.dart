@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter/widgets.dart';
 import 'flashcard_view.dart';
 import 'flashcard.dart';
 void main() {
@@ -20,14 +21,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(title: 'CogniCards'),
+      home: const HomePage(title: 'CogniCards'),
     );
   }
 }
 
 
 class HomePage extends StatefulWidget{
-  const HomePage({Key?key}): super(key:key);
+  const HomePage({Key?key, required String title}): super(key:key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -39,8 +40,14 @@ class _HomePageState extends State<HomePage>{
   Widget build(BuildContext context){
   return MaterialApp(
   home: Scaffold(
+    appBar: AppBar(
+        title: const Text('Cognicode'),
+        backgroundColor: Colors.purple,
+        elevation: 4,
+      ),
    body: Center(
-        child: Column(
+        child: Row(
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
@@ -49,9 +56,19 @@ class _HomePageState extends State<HomePage>{
                   context,
                   MaterialPageRoute(builder: (context) => MyCard(title: 'Set 1')),
                 );
+            
               },
               child: Text('Set 1'),
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+            minimumSize: Size(50, 50), // Adjust the size as needed
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2.0),
+            
+ // Adjust the border radius as needed
             ),
+          ),
+        ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -60,7 +77,16 @@ class _HomePageState extends State<HomePage>{
                 );
               },
               child: Text('Set 2'),
+
+              style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.lightBlue,
+            minimumSize: Size(50, 50), // Adjust the size as needed
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(2.0), // Adjust the border radius as needed
             ),
+          ),
+        ),
+            
             // Add more buttons for additional sets
           ],
         ),
@@ -96,6 +122,7 @@ class _FlashCardAppState extends State<MyCard> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -128,8 +155,16 @@ class _FlashCardAppState extends State<MyCard> {
                 ],
               )
             ],
+          
           ),
         ),
+         floatingActionButton: FloatingActionButton.large(
+        onPressed: () {},
+        backgroundColor: Colors.deepOrange,
+        child: const Icon(Icons.add),
+        
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       ),
     );
   }
