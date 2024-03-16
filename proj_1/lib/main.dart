@@ -6,6 +6,8 @@ void main() {
   runApp(const MyApp());
 }
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,21 +20,66 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FlashCardApp(title: 'CogniCards'),
+      home: HomePage(title: 'CogniCards'),
     );
   }
 }
 
-class FlashCardApp extends StatefulWidget {
-  const FlashCardApp({super.key, required this.title});
+
+class HomePage extends StatefulWidget{
+  const HomePage({Key?key}): super(key:key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
+  @override
+
+  Widget build(BuildContext context){
+  return MaterialApp(
+  home: Scaffold(
+   body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyCard(title: 'Set 1')),
+                );
+              },
+              child: Text('Set 1'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyCard(title: 'Set 2')),
+                );
+              },
+              child: Text('Set 2'),
+            ),
+            // Add more buttons for additional sets
+          ],
+        ),
+      ),
+  ),
+    );
+  }
+}
+
+class MyCard extends StatefulWidget {
+  const MyCard({super.key, required this.title});
 
   final String title;
 
   @override
-  State<FlashCardApp> createState() => _FlashCardAppState();
+  State<MyCard> createState() => _FlashCardAppState();
 }
 
-class _FlashCardAppState extends State<FlashCardApp> {
+class _FlashCardAppState extends State<MyCard> {
  List<Flashcard> _flashcards =[
   Flashcard( 
     term: "osmosis",
