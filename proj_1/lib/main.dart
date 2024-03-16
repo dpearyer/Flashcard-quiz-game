@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
 }
 
 
+
 class HomePage extends StatefulWidget{
   const HomePage({Key?key, required String title}): super(key:key);
 
@@ -35,16 +36,22 @@ class HomePage extends StatefulWidget{
 }
 
 class _HomePageState extends State<HomePage>{
+  
   @override
 
   Widget build(BuildContext context){
   return MaterialApp(
   home: Scaffold(
     appBar: AppBar(
-        title: const Text('Cognicode'),
+        title: const Text('Cognicode', textAlign: TextAlign.center,),
         backgroundColor: Colors.purple,
         elevation: 4,
+        titleTextStyle:TextStyle(
+        color: Colors.white ,
+        fontSize: 24,
+        
       ),
+    ),
    body: Center(
         child: Row(
 
@@ -158,13 +165,62 @@ class _FlashCardAppState extends State<MyCard> {
           
           ),
         ),
-         floatingActionButton: FloatingActionButton.large(
-        onPressed: () {},
-        backgroundColor: Colors.deepOrange,
-        child: const Icon(Icons.add),
-        
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+         floatingActionButton: FloatingActionButton.small(
+        onPressed: () async{
+           final newFlashcard = await showDialog<Flashcard>(
+      context: context,
+      builder: (BuildContext context) {
+        String term = '';
+        String definition = '';
+        return AlertDialog(
+          title: Text('Add New Flashcard'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                onChanged: (value) {
+                  term = value;
+                },
+                decoration: InputDecoration(labelText: 'Term'),
+              ),
+              TextFormField(
+                onChanged: (value) {
+                  definition = value;
+                },
+                decoration: InputDecoration(labelText: 'Definition'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newFlashcard = Flashcard(term: term, definition: definition);
+                Navigator.pop(context, newFlashcard);
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newFlashcard != null) {
+      setState(() {
+        _flashcards.add(newFlashcard);
+      });
+    }
+  },
+  backgroundColor: Colors.deepPurple,
+  child: Icon(Icons.add),
+  
+         ),
+floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       ),
     );
   }
@@ -180,5 +236,58 @@ class _FlashCardAppState extends State<MyCard> {
       _currentIndex =
           (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
     });
+  }
+
+
+
+void _addNewFlashcard() async {
+    final newFlashcard = await showDialog<Flashcard>(
+      context: context,
+      builder: (BuildContext context) {
+        String term = '';
+        String definition = '';
+        return AlertDialog(
+          title: Text('Add New Flashcard'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                onChanged: (value) {
+                  term = value;
+                },
+                decoration: InputDecoration(labelText: 'Term'),
+              ),
+              TextFormField(
+                onChanged: (value) {
+                  definition = value;
+                },
+                decoration: InputDecoration(labelText: 'Definition'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newFlashcard = Flashcard(term: term, definition: definition);
+                Navigator.pop(context, newFlashcard);
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newFlashcard != null) {
+      setState(() {
+        _flashcards.add(newFlashcard);
+      });
+    }
   }
 }
