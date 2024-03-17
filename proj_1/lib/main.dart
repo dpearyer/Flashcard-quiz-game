@@ -110,8 +110,15 @@ class _HomePageState extends State<HomePage>{
   ),
   ),
     );
+  
+    
   }
+  
+
 }
+
+ 
+
 
 class MyCard extends StatefulWidget {
   const MyCard({super.key, required this.title});
@@ -123,134 +130,99 @@ class MyCard extends StatefulWidget {
 }
 
 class _FlashCardAppState extends State<MyCard> {
- List<Flashcard> _flashcards =[
-  Flashcard( 
-    term: "osmosis",
-    definition: "explanation"
-  ),
-  Flashcard( 
-    term: "osmosis 2",
-    definition: "explanation 2"
-  )
- ];
-   int _currentIndex = 0;
+  final List<FlashcardSet> _flashcardSets = [
+    FlashcardSet(
+      title: "Set 1",
+      flashcards: [
+       Flashcard(term: "Term 1", definition: "Definition 1"),
+        Flashcard(term: "Term 2", definition: "Definition 2"),
+      ],
+    ),
+    FlashcardSet(
+      title: "Set 2",
+      flashcards: [
+         Flashcard(term: "Term 3", definition: "Definition 3"),
+        Flashcard(term: "Term 4", definition: "Definition 4"),
+       
+      ],
+    ),
+  ];
+  int _currentIndex = 0;
+  
 
-   @override
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                  width: 350,
-                  height: 250,
-                  child: FlipCard(
-                      
-                      front:
-                        FlashcardView(
-                        text: _flashcards[_currentIndex].term,
-                        
-                    ),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                      back: 
-                        FlashcardView(
-                        text: _flashcards[_currentIndex].definition,
-                      ))),
+                width: 350,
+                height: 250,
+                child: FlipCard(
+                  front: FlashcardView(
+                    text: _flashcardSets[_currentIndex].flashcards[_currentIndex].term,
+                  ),
+                  back: FlashcardView(
+                    text: _flashcardSets[_currentIndex].flashcards[_currentIndex].definition,
+                  ),
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   OutlinedButton.icon(
-                      onPressed: showPreviousCard,
-                      icon: Icon(Icons.chevron_left),
-                      label: Text('')),
+                    onPressed: showPreviousCard,
+                    icon: Icon(Icons.chevron_left),
+                    label: Text(''),
+                  ),
                   OutlinedButton.icon(
-                      onPressed: showNextCard,
-                      icon: Icon(Icons.chevron_right),
-                      label: Text('')),
+                    onPressed: showNextCard,
+                    icon: Icon(Icons.chevron_right),
+                    label: Text(''),
+                  ),
                 ],
-              )
+              ),
+              ElevatedButton(
+                onPressed: () => _addNewFlashcard(),
+                child: Text('Add Flashcard'),
+              ),
+              ElevatedButton(
+                onPressed: () => _startQuiz(),
+                child: Text('Start Quiz'),
+              ),
             ],
-          
           ),
         ),
-         floatingActionButton: FloatingActionButton.small(
-        onPressed: () async{
-           final newFlashcard = await showDialog<Flashcard>(
-      context: context,
-      builder: (BuildContext context) {
-        String term = '';
-        String definition = '';
-        return AlertDialog(
-          title: Text('Add New Flashcard'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                onChanged: (value) {
-                  term = value;
-                },
-                decoration: InputDecoration(labelText: 'Term'),
-              ),
-              TextFormField(
-                onChanged: (value) {
-                  definition = value;
-                },
-                decoration: InputDecoration(labelText: 'Definition'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final newFlashcard = Flashcard(term: term, definition: definition);
-                Navigator.pop(context, newFlashcard);
-              },
-              child: Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (newFlashcard != null) {
-      setState(() {
-        _flashcards.add(newFlashcard);
-      });
-    }
-  },
-  backgroundColor: Colors.deepPurple,
-  child: Icon(Icons.add),
-  
-         ),
-floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButton: FloatingActionButton.small(
+          onPressed: () => _createNewSet(),
+          backgroundColor: Colors.deepPurple,
+          child: Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       ),
     );
   }
-   void showNextCard() {
+
+  void showNextCard() {
     setState(() {
-      _currentIndex =
-          (_currentIndex + 1 < _flashcards.length) ? _currentIndex + 1 : 0;
+      _currentIndex = (_currentIndex + 1) % _flashcardSets.length;
     });
   }
 
   void showPreviousCard() {
     setState(() {
-      _currentIndex =
-          (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
+      _currentIndex = (_currentIndex - 1 + _flashcardSets.length) % _flashcardSets.length;
     });
   }
 
-
-
-void _addNewFlashcard() async {
+  void _addNewFlashcard() async {
     final newFlashcard = await showDialog<Flashcard>(
       context: context,
       builder: (BuildContext context) {
@@ -285,7 +257,8 @@ void _addNewFlashcard() async {
             ElevatedButton(
               onPressed: () {
                 final newFlashcard = Flashcard(term: term, definition: definition);
-                Navigator.pop(context, newFlashcard);
+                _flashcardSets[_currentIndex].flashcards.add(newFlashcard);
+                Navigator.pop(context);
               },
               child: Text('Add'),
             ),
@@ -296,8 +269,58 @@ void _addNewFlashcard() async {
 
     if (newFlashcard != null) {
       setState(() {
-        _flashcards.add(newFlashcard);
+        _flashcardSets[_currentIndex].flashcards.add(newFlashcard);
       });
     }
+  }
+
+  void _createNewSet() async {
+    final newSet = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String setTitle = '';
+        return AlertDialog(
+          title: Text('Create New Set'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                onChanged: (value) {
+                  setTitle = value;
+                },
+                decoration: InputDecoration(labelText: 'Set Title'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (setTitle.isNotEmpty) {
+                  _flashcardSets.add(FlashcardSet(title: setTitle));
+                }
+                Navigator.pop(context);
+              },
+              child: Text('Create'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newSet != null && newSet.isNotEmpty) {
+      setState(() {
+        _flashcardSets.add(FlashcardSet(title: newSet));
+      });
+    }
+  }
+
+  void _startQuiz() {
+  
   }
 }
