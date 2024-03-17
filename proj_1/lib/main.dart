@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/widgets.dart';
@@ -190,11 +191,11 @@ class _FlashCardAppState extends State<MyCard> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () => _addNewFlashcard(),
+                onPressed: () => _addNewFlashcard(context , _flashcardSets, _currentIndex),
                 child: Text('Add Flashcard'),
               ),
               ElevatedButton(
-                onPressed: () => _startQuiz(),
+                onPressed: () => _startQuiz(_flashcardSets, _currentIndex),
                 child: Text('Start Quiz'),
               ),
             ],
@@ -222,9 +223,42 @@ class _FlashCardAppState extends State<MyCard> {
     });
   }
 
-  void _addNewFlashcard() async {
+  int _calculateCorrectAnswers( List<Flashcard> flashcards) {
+  int correctAnswers = 0;
+  for (var i = 0; i < flashcards.length; i++) {
+    if (flashcards[i].userAnswer == flashcards[i].term) {
+      correctAnswers++;
+    }
+  }
+  return correctAnswers;
+  }
+
+
+
+
+    void _startQuiz(List<FlashcardSet> flashcardSets, int currentIndex) {
+      List<Flashcard> currentFlashcards = flashcardSets[currentIndex].flashcards;
+  int totalQuestions = currentFlashcards.length;
+  int correctAnswers = _calculateCorrectAnswers(currentFlashcards);
+  
+  Navigator.push(
+    context as BuildContext,
+    MaterialPageRoute(
+      builder: (context) => QuizModeScreen(
+        flashcards: currentFlashcards,
+        totalQuestions: totalQuestions,
+        correctAnswers: correctAnswers,
+      ),
+    ),
+  );
+    }
+
+  
+  
+
+  void _addNewFlashcard(BuildContext context, List<FlashcardSet> flashcardSets, int currentIndex) async {
     final newFlashcard = await showDialog<Flashcard>(
-      context: context,
+      context: context as BuildContext,
       builder: (BuildContext context) {
         String term = '';
         String definition = '';
@@ -276,7 +310,7 @@ class _FlashCardAppState extends State<MyCard> {
 
   void _createNewSet() async {
     final newSet = await showDialog<String>(
-      context: context,
+      context: context as BuildContext,
       builder: (BuildContext context) {
         String setTitle = '';
         return AlertDialog(
@@ -320,7 +354,152 @@ class _FlashCardAppState extends State<MyCard> {
     }
   }
 
-  void _startQuiz() {
+}
+  class QuizModeScreen extends StatefulWidget {
+  final List<Flashcard> flashcards;
+  final int totalQuestions;
+  final int correctAnswers;
+
+  QuizModeScreen({required this.flashcards, required this.totalQuestions, required this.correctAnswers,});
+
+  @override
+  _QuizModeScreenState createState() => _QuizModeScreenState();
+}
+
+class _QuizModeScreenState extends State<QuizModeScreen> {
+ 
+
+  int currentIndex = 0;
+  int score = 0;
+  TextEditingController textEditingController = TextEditingController();
   
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Quiz Mode'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Definition: ${widget.flashcards[currentIndex].definition}',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: textEditingController,
+              decoration: InputDecoration(
+                labelText: 'Enter the correct term',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (textEditingController.text ==
+                    widget.flashcards[currentIndex].term) {
+                  setState(() {
+                    score++;
+                  });
+                }
+                if (currentIndex < widget.flashcards.length - 1) {
+                  setState(() {
+                    currentIndex++;
+                    textEditingController.clear();
+                  });
+                } else {
+                  // Navigate to the score screen or perform any other action
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QuizScoreScreen(score: score, totalQuestions: null, flashcards: [], correctAnswers: null,),
+                    ),
+                  );
+                }
+              },
+              child: Text('Next'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+}
+
+
+
+
+class QuizScoreScreen extends StatelessWidget {
+  final int? totalQuestions;
+  final int? correctAnswers;
+  final List<Flashcard> flashcards;
+
+  QuizScoreScreen({
+    required this.totalQuestions,
+    required this.correctAnswers,
+    required this.flashcards, required int score,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Quiz Score'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('You got $correctAnswers out of $totalQuestions correct!'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Navigate back to the quiz screen
+              },
+              child: Text('Try Again'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the screen showing correct answers
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CorrectAnswersScreen(flashcards: flashcards),
+                  ),
+                );
+              },
+              child: Text('Show Correct Answers'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CorrectAnswersScreen extends StatelessWidget {
+  final List<Flashcard> flashcards;
+
+  CorrectAnswersScreen({required this.flashcards});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Correct Answers'),
+      ),
+      body: ListView.builder(
+        itemCount: flashcards.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('Term: ${flashcards[index].term}'),
+            subtitle: Text('Definition: ${flashcards[index].definition}'),
+          );
+        },
+      ),
+    );
   }
 }

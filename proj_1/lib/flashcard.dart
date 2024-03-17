@@ -4,10 +4,11 @@ class Flashcard {
   final String? title;
   final String term;
   final String definition;
+  String userAnswer;
  
 
   Flashcard({required this.term, required this.definition,    this.id,
-     this.setId, this.title=''});
+     this.setId, this.title='', this.userAnswer = '', });
 
 
 
