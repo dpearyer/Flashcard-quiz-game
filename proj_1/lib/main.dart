@@ -162,12 +162,13 @@ class _FlashCardAppState extends State<MyCard> {
                 ],
               ),
               ElevatedButton(
-                onPressed: () => _startQuiz(_flashcardSets, _currentIndex),
+                onPressed: () => _startQuiz( _currentIndex),
                 child: Text('Start Quiz'),
-              ),
+          ),
             ],
           
           ),
+          
         ),
          floatingActionButton: FloatingActionButton.small(
         onPressed: () async{
@@ -194,7 +195,11 @@ class _FlashCardAppState extends State<MyCard> {
                 decoration: InputDecoration(labelText: 'Definition'),
               ),
             ],
+          
+            
           ),
+      
+         
           actions: [
             TextButton(
               onPressed: () {
@@ -210,7 +215,7 @@ class _FlashCardAppState extends State<MyCard> {
               child: Text('Add'),
             ),
 
-             
+              
           ],
           
         );
@@ -257,8 +262,8 @@ int _calculateCorrectAnswers( List<Flashcard> flashcards) {
   }
 
 
- void _startQuiz(List<FlashcardSet> flashcardSets, int currentIndex) {
-      List<Flashcard> currentFlashcards = flashcardSets[currentIndex].flashcards;
+ void _startQuiz(int currentIndex) {
+  List<Flashcard> currentFlashcards = _flashcards; 
   int totalQuestions = currentFlashcards.length;
   int correctAnswers = _calculateCorrectAnswers(currentFlashcards);
   
