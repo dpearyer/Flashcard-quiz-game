@@ -16,9 +16,12 @@ class DatabaseHelper {
     final String path = join(await getDatabasesPath(), dbName);
     return openDatabase(
       path,
-      onCreate: (db, version) {
-        return db.execute(
+      onCreate: (db, version) async {
+        await db.execute(
           'CREATE TABLE flashcards(id INTEGER PRIMARY KEY AUTOINCREMENT, term TEXT, definition TEXT)',
+        );
+        await db.execute(
+          'CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, password TEXT)',
         );
       },
       version: 1,
@@ -44,5 +47,26 @@ class DatabaseHelper {
         definition: maps[i]['definition'],
       );
     });
+  }
+
+  // Method to register a new user
+  Future<void> registerUser(String email, String password) async {
+    final Database db = await database;
+    await db.insert(
+      'users',
+      {'email': email, 'password': password},
+      conflictAlgorithm: ConflictAlgorithm.ignore, // Handle duplicate emails
+    );
+  }
+
+  // Method to authenticate a user
+  Future<bool> authenticateUser(String email, String password) async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+    );
+    return result.isNotEmpty;
   }
 }
