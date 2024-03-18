@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
+import 'main.dart'; // Import the HomePage
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -33,12 +35,15 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     // Authenticate user
-    bool isAuthenticated = await DatabaseHelper().authenticateUser(email, password);
+// Authenticate user
+bool isAuthenticated = await DatabaseHelper().authenticateUser(email, password);
 
-    if (isAuthenticated) {
-      // Navigate to home or next screen upon successful login
-      // For now, navigate back to previous screen
-      Navigator.pop(context);
+if (isAuthenticated) {
+  // Navigate to home upon successful login
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => HomePage(title: 'Cognicode')),
+  );
     } else {
       // Show error dialog for invalid credentials
       showDialog(
