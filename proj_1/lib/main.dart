@@ -3,8 +3,6 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/widgets.dart';
 import 'flashcard_view.dart';
 import 'flashcard.dart';
-import 'login_page.dart';
-import 'signup_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -18,16 +16,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login and Signup',
+      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      initialRoute: '/signup', // Change the initial route to '/signup'
-      routes: {
-        '/': (context) => LoginPage(),
-        '/signup': (context) => SignupPage(),
-        // Add other routes as needed
-      },
+      home: const HomePage(title: 'CogniCards'),
     );
   }
 }
