@@ -165,6 +165,12 @@ class _FlashCardAppState extends State<MyCard> {
                       onPressed: showNextCard,
                       icon: Icon(Icons.chevron_right),
                       label: Text('')),
+                      IconButton(
+                    onPressed: () {
+                      _deleteFlashcard(_currentIndex);
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
                 ],
               ),
               ElevatedButton(
@@ -254,6 +260,15 @@ floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     setState(() {
       _currentIndex =
           (_currentIndex - 1 >= 0) ? _currentIndex - 1 : _flashcards.length - 1;
+    });
+  }
+
+  void _deleteFlashcard(int index) {
+    setState(() {
+      _flashcards.removeAt(index);
+      if (_currentIndex >= _flashcards.length) {
+        _currentIndex = _flashcards.length - 1;
+      }
     });
   }
 
